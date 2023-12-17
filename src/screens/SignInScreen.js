@@ -1,11 +1,17 @@
 import { Alert, Image, Keyboard, StyleSheet, View } from 'react-native';
 import Input, { KeyboardTypes, ReturnKeyTypes } from '../components/Input';
 import SafeInputView from '../components/SafeInputView';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import Button from '../components/Button';
 import { signIn } from '../api/auth';
+import PropTypes from 'prop-types';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import UserContext from '../contexts/UserContext';
 
 const SignInScreen = () => {
+  const insets = useSafeAreaInsets();
+
+  const { setUser } = useContext(UserContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const passwordRef = useRef(null);
@@ -19,10 +25,11 @@ const SignInScreen = () => {
   const onSubmit = async () => {
     if (!isLoading && !disabled) {
       try {
+        setIsLoading(true);
         Keyboard.dismiss();
         const data = await signIn(email, password);
-        console.log(data);
         setIsLoading(false);
+        setUser(data);
       } catch (error) {
         Alert.alert('로그인 실패', error, [
           { text: '확인', onPress: () => setIsLoading(false) },
@@ -33,8 +40,14 @@ const SignInScreen = () => {
 
   return (
     <SafeInputView>
-      <View style={styles.container}>
+      <View
+        style={[
+          styles.container,
+          { paddingTop: insets.top, paddingBottom: insets.bottom },
+        ]}
+      >
         <Image
+          // eslint-disable-next-line no-undef
           source={require('../../assets/login_dog.png')}
           style={styles.image}
         />
@@ -68,6 +81,10 @@ const SignInScreen = () => {
       </View>
     </SafeInputView>
   );
+};
+
+SignInScreen.propTypes = {
+  navigation: PropTypes.object,
 };
 
 const styles = StyleSheet.create({

@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { StyleSheet, Text, TextInput, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { BLACK, GRAY, PRIMARY } from '../colors';
 import { forwardRef, useState } from 'react';
@@ -17,6 +17,7 @@ const Input = forwardRef(({ title, placeholder, value, ...props }, ref) => {
   Input.displayName = 'Input';
 
   const [isFocused, setIsFocused] = useState(false);
+
 
   return (
     <View style={styles.container}>
